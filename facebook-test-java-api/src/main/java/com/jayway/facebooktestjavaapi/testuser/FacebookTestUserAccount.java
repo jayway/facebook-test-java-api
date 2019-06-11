@@ -158,6 +158,11 @@ public interface FacebookTestUserAccount
      * @return The password for the test user.
      */
     String getPassword();
+    
+    /**
+     * @return The email for the test user.
+     */
+    String getEmail();
 
     /**
      * @return The JSON string representation of the id, access token and login URL.
