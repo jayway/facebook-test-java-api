@@ -79,11 +79,11 @@ public class HttpClientFacebookTestUserStore implements FacebookTestUserStore {
 
     private String getAccessToken(String applicationId, String applicationSecret) {
         String result = get("/oauth/access_token", buildList("grant_type", "client_credentials", "client_id", applicationId, "client_secret", applicationSecret));
-        String prefix = "access_token=";
-        if (!result.startsWith(prefix)) {
+        try {
+            return ((JSONObject) new JSONParser().parse(result)).get("access_token").toString();
+        } catch (Throwable e) {
             throw new IllegalArgumentException("Could not get access token for provided authentication");
         }
-        return result.substring(prefix.length());
     }
 
     public FacebookTestUserAccount createTestUser(boolean appInstalled, String permissions) {
