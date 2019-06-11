@@ -168,6 +168,7 @@ public class HttpClientFacebookTestUserAccount implements FacebookTestUserAccoun
         return userDataAsString("password");
     }
     
+    @Override
     public String getEmail()
     {
         return userDataAsString("email");
@@ -209,7 +210,7 @@ public class HttpClientFacebookTestUserAccount implements FacebookTestUserAccoun
             helper.appendToList(settings,"password", password);
             return this;
         }
-
+        
         @Override
         public void apply()
         {
