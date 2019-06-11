@@ -7,7 +7,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -94,9 +93,8 @@ public class HttpClientFacebookTestUserStore implements FacebookTestUserStore {
       }
       catch (IOException ex)
       {
-        java.util.logging.Logger.getLogger(HttpClientFacebookTestUserStore.class.getName()).log(Level.SEVERE, null, ex);
+        throw new IllegalArgumentException("Could not get access token for provided authentication");
       }
-      return null;
     }
 
     public FacebookTestUserAccount createTestUser(boolean appInstalled, String permissions) {
