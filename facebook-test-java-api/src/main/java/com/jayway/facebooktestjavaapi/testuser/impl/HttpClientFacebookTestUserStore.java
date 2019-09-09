@@ -1,7 +1,13 @@
 package com.jayway.facebooktestjavaapi.testuser.impl;
 
-import com.jayway.facebooktestjavaapi.testuser.FacebookTestUserAccount;
-import com.jayway.facebooktestjavaapi.testuser.FacebookTestUserStore;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -23,12 +29,9 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.facebooktestjavaapi.testuser.FacebookTestUserAccount;
+import com.jayway.facebooktestjavaapi.testuser.FacebookTestUserStore;
 
 /**
  * Implementation of FacebookTestUserStore that relies on apache HttpClient for communication with Facebook.
@@ -79,11 +82,19 @@ public class HttpClientFacebookTestUserStore implements FacebookTestUserStore {
 
     private String getAccessToken(String applicationId, String applicationSecret) {
         String result = get("/oauth/access_token", buildList("grant_type", "client_credentials", "client_id", applicationId, "client_secret", applicationSecret));
-        String prefix = "access_token=";
-        if (!result.startsWith(prefix)) {
-            throw new IllegalArgumentException("Could not get access token for provided authentication");
+        ObjectMapper objectMapper = new ObjectMapper();
+      try
+      {
+          JSONObject object = objectMapper.readValue(result, JSONObject.class);
+        if (!object.containsKey("access_token")) {
+          throw new IllegalArgumentException("Could not get access token for provided authentication");
         }
-        return result.substring(prefix.length());
+        return  object.get("access_token").toString();
+      }
+      catch (IOException ex)
+      {
+        throw new IllegalArgumentException("Could not get access token for provided authentication");
+      }
     }
 
     public FacebookTestUserAccount createTestUser(boolean appInstalled, String permissions) {
